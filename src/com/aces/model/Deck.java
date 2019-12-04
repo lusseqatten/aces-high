@@ -1,7 +1,6 @@
 package com.aces.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -67,22 +66,22 @@ public class Deck {
 		cards.add(new Card(CardColor.DIAMONDS, CardType.KING));
 
 		List<Card> shuffled = new ArrayList<Card>();
-		
+
 		Random r = new Random();
-		
-		while(!cards.isEmpty()) {
+
+		while (!cards.isEmpty()) {
 			Card randomCard = cards.remove(r.nextInt(cards.size()));
 			shuffled.add(randomCard);
 		}
 		cards = shuffled;
 	}
-	
+
 	public void print() {
 		System.out.println(cards);
 	}
 
 	public Card draw() {
-		return cards.remove(cards.size()-1);
+		return cards.remove(cards.size() - 1);
 	}
 
 }
