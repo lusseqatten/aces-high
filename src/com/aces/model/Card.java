@@ -1,23 +1,28 @@
 package com.aces.model;
 
+import java.util.List;
+
+import com.aces.util.CardUtils;
+
 public class Card {
 
+	public static final Card HIDDEN = new Card(CardColor.UNKNOWN, CardValue.UNKNOWN);
 	private CardColor color;
-	private CardType type;
+	private CardValue value;
 
-	public Card(CardColor c, CardType ct) {
+	public Card(CardColor c, CardValue ct) {
 		this.color = c;
-		this.type = ct;
+		this.value = ct;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Color: %s, Type: %s, Value(s): %s", color, type,
-				type.getValue());
+		return String.format("Color: %s, Type: %s, Value(s): %s", color, value,
+				value.getValue());
 	}
 
-	public CardType getCardType() {
-		return type;
+	public CardValue getCardValue() {
+		return value;
 	}
 	
 	public CardColor getCardColor() {
@@ -25,15 +30,20 @@ public class Card {
 	}
 
 	public boolean isAce() {
-		return type == CardType.ACE;
+		return value == CardValue.ACE;
 	}
 
 	public int getValue() {
-		return type.getValue();
+		return value.getValue();
 	}
 	
 	public String getDisplay() {
-		return String.format("%s %s (%d)", color.name(),type.name(),type.getValue());
+		return String.format("%s %s (%d)", color.name(),value.name(),value.getValue());
+	}
+	public String renderCard() {
+		String format = CardUtils.getFormat(getCardValue());
+		List<String> symbols = CardUtils.getSymbols(value, color);
+		return String.format(format, symbols.toArray());
 	}
 
 }

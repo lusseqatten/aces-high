@@ -1,10 +1,12 @@
 package com.aces.main;
 
+import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import com.aces.model.CardValue;
 import com.aces.model.Deck;
 import com.aces.model.Hand;
 
@@ -36,28 +38,32 @@ public class AppEntry {
 		scan.nextLine();
 		deck.draw(); // vaska ett kort TODO: Ska detta vara med?
 		System.out.println("Threw a card in the pile..");
-		dealerHand.add(deck.draw()); // dolt kort
+		scan.nextLine();
 		System.out.println("Dealer drew a hidden card");
+		dealerHand.printDealer();
 		scan.nextLine();
 		System.out.println("Player draw");
 		playerHand.add(deck.draw());
+		dealerHand.printDealer();
 		playerHand.printPlayer();
 		scan.nextLine();
 		System.out.println("Dealer draw");
 		dealerHand.add(deck.draw());
 		dealerHand.printDealer();
+		playerHand.printPlayer();
 		scan.nextLine();
 		System.out.println("Player draw");
 		playerHand.add(deck.draw());
-		scan.nextLine();
 
 		while (!isGameOver) {
 
 			if (!playerStay) {
+				dealerHand.printDealer();
 				playerHand.printPlayer();
 				System.out.println("Hit?");
 				if (POSITIVE_ANSWERS.contains(scan.next())) {
 					playerHand.add(deck.draw());
+					dealerHand.printDealer();
 					playerHand.printPlayer();
 				} else {
 					playerStay = true;
@@ -70,44 +76,45 @@ public class AppEntry {
 				if (playerScore > 21) {
 					System.out.println("You lost");
 					playerStay = true;
+					scan.nextLine();
 				} else if (playerScore == 21) {
-					System.out.println("BLACK JACK(POT)! (weed, haHA)");
+					System.out.println("!** BURAKKU JAKKURUU **!");
 					playerStay = true;
+					scan.nextLine();
 				} else {
 					scan.nextLine();
 				}
 			}
 
 			int dealerScore = dealerHand.getScore();
-			if (dealerScore < 17) {
+			if (dealerScore < 17 && playerStay) {
 				dealerHand.add(deck.draw());
+				dealerHand.printDealer();
+				playerHand.printPlayer();
+				scan.nextLine();
 				if (dealerScore > 21) {
 					dealerStay = true;
 				}
 			} else {
 				dealerStay = true;
+				scan.nextLine();
 			}
-			scan.nextLine();
-			dealerHand.printDealer();
-			System.out.println("\n");
 			isGameOver = dealerStay && playerStay;
 
 		}
 		
-		playerHand.printPlayer();
-		System.out.println();
 		dealerHand.printDealerFull();
-		System.out.println();
+		playerHand.printPlayer();
 		
 		if (playerHand.getScore() > dealerHand.getScore() && !playerHand.isThicc()
 				|| dealerHand.isThicc() && !playerHand.isThicc()) {
-			System.out.println("You won!");
+			System.out.printf("You won!");
 		} else if (!dealerHand.isThicc()) {
-			System.out.println("Dealer won! :(");
+			System.out.printf("Dealer won! :(");
 		} else if (playerHand.isBlackJack() && dealerHand.isBlackJack()) {
-			System.out.println("Draw, double black jack");
+			System.out.printf("Draw, double black jack");
 		} else {
-			System.out.println("You both went thicc..");
+			System.out.printf("You both went thicc..");
 		}
 
 		System.out.println("\n\nWould you like to play again?");

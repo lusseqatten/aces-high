@@ -1,7 +1,12 @@
 package com.aces.model;
 
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
 import java.util.stream.Collectors;
+
+import com.aces.util.CardUtils;
 
 public class Hand extends ArrayList<Card> {
 
@@ -11,28 +16,48 @@ public class Hand extends ArrayList<Card> {
 	private static final long serialVersionUID = 1L;
 
 	public void printPlayer() {
-		int score = getScore();
-
 		System.out.println("--- Your hand ---");
-		System.out.println("Current score: " + score);
-		System.out.println(this.stream().map(c -> c.getDisplay()).collect(Collectors.joining(", ")));
+		print();
+	}
+
+	public void print() {
+		print(false);
+	}
+
+	public void print(boolean isDealer) {
+		List<String[]> cardSplits = new ArrayList<String[]>();
+
+		boolean hasHiddenCard = isDealer && size() < 3;
+		if (hasHiddenCard) {
+			add(Card.HIDDEN);
+		}
+		for (Card c : this) {
+			cardSplits.add(c.renderCard().split("\n"));
+		}
+		if (cardSplits.size() > 0 || hasHiddenCard) {
+
+			for (int rowNumber = 0; rowNumber < 6; rowNumber++) {
+				StringBuilder sb = new StringBuilder();
+
+				for (String[] rows : cardSplits) {
+					sb.append(rows[rowNumber]).append(rowNumber == 0 ? "  " : " ");
+				}
+				System.out.println(sb.toString());
+			}
+		}
+		if (hasHiddenCard) {
+			remove(0);
+		}
 	}
 
 	public void printDealer() {
-		int score = getScore();
-
 		System.out.println("--- Dealer hand ---");
-		System.out.println("Current score: Unknown + " + (size() > 1 ? score - get(0).getValue() : "-"));
-		System.out.println(
-				this.subList(1, this.size()).stream().map(c -> c.getDisplay()).collect(Collectors.joining(", ")));
+		print(true);
 	}
 
 	public void printDealerFull() {
-		int score = getScore();
 		System.out.println("--- Dealer hand ---");
-		System.out.println("Current score: " + score);
-		System.out.println(this.stream().map(c -> c.getDisplay()).collect(Collectors.joining(", ")));
-
+		print();
 	}
 
 	public int getScore() {
