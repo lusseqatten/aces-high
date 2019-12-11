@@ -28,13 +28,13 @@ public class AppEntry {
 	}
 
 	private static boolean doGame(Scanner scan) {
-
+		System.out.println("Är du redo att vaska?");
 		Deck deck = new Deck();
 		Hand playerHand = new Hand();
 		Hand dealerHand = new Hand();
-		boolean isGameOver = false;
-		boolean playerStay = false;
-		boolean dealerStay = false;
+		boolean gameActive = true;
+		boolean playerActive = true;
+		boolean dealerActive = true;
 		scan.nextLine();
 		deck.draw(); // vaska ett kort TODO: Ska detta vara med?
 		System.out.println("Threw a card in the pile..");
@@ -55,9 +55,9 @@ public class AppEntry {
 		System.out.println("Player draw");
 		playerHand.add(deck.draw());
 
-		while (!isGameOver) {
+		while (gameActive) {
 
-			if (!playerStay) {
+			if (playerActive) {
 				dealerHand.printDealer();
 				playerHand.printPlayer();
 				System.out.println("Hit?");
@@ -66,40 +66,37 @@ public class AppEntry {
 					dealerHand.printDealer();
 					playerHand.printPlayer();
 				} else {
-					playerStay = true;
+					playerActive = false;
 				}
 			}
 			System.out.println();
 
-			int playerScore = playerHand.getScore();
-			if (!playerStay) {
+			if (playerActive) {
+				int playerScore = playerHand.getScore();
 				if (playerScore > 21) {
 					System.out.println("You lost");
-					playerStay = true;
+					playerActive = false;
 					scan.nextLine();
 				} else if (playerScore == 21) {
-					System.out.println("!** BURAKKU JAKKURUU **!");
-					playerStay = true;
+					System.out.println("!** BURAKKU JAKKU **!");
+					playerActive = false;
 					scan.nextLine();
 				} else {
 					scan.nextLine();
 				}
 			}
 
-			int dealerScore = dealerHand.getScore();
-			if (dealerScore < 17 && playerStay) {
-				dealerHand.add(deck.draw());
-				dealerHand.printDealer();
-				playerHand.printPlayer();
-				scan.nextLine();
-				if (dealerScore > 21) {
-					dealerStay = true;
+			if (!playerActive) {
+				if (dealerHand.getScore() < 17) {
+					dealerHand.add(deck.draw());
+					dealerHand.printDealer();
+					playerHand.printPlayer();
+					scan.nextLine();
+				} else{
+					dealerActive = false;
 				}
-			} else {
-				dealerStay = true;
-				scan.nextLine();
 			}
-			isGameOver = dealerStay && playerStay;
+			gameActive = dealerActive && playerActive;
 
 		}
 		
